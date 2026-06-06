@@ -1,0 +1,435 @@
+:root {
+  --bg: #0f172a;
+  --panel: #111827;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --same: #facc15;
+  --match: #c084fc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Arial, "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+#app {
+display: grid;
+grid-template-columns: 310px 1fr 350px;
+height: 100vh;
+transition: grid-template-columns 0.18s ease;
+}
+
+aside {
+  background: var(--panel);
+  border-right: 1px solid #334155;
+  padding: 14px;
+  overflow: auto;
+}
+
+#right {
+border-right: 0;
+border-left: 1px solid #334155;
+position: relative;
+}
+
+h2 {
+  margin: 6px 0 12px;
+  font-size: 18px;
+}
+
+h3 {
+  margin: 16px 0 8px;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  background: #334155;
+  color: var(--text);
+  border: 1px solid #475569;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  margin: 3px 2px;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+button.primary {
+  background: #075985;
+  border-color: #0ea5e9;
+}
+
+button.danger {
+  background: #7f1d1d;
+  border-color: #ef4444;
+}
+
+button.ok {
+  background: #14532d;
+  border-color: #22c55e;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  background: #0b1220;
+  color: var(--text);
+  border: 1px solid #475569;
+  border-radius: 8px;
+  padding: 8px;
+  margin: 4px 0 8px;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 6px;
+}
+
+input[type="file"] {
+  font-size: 12px;
+}
+
+textarea {
+  min-height: 100px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+}
+
+label {
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.row > * {
+  flex: 1;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.sep {
+  height: 1px;
+  background: #334155;
+  margin: 12px 0;
+}
+
+.pill {
+  display: inline-block;
+  background: #334155;
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin: 2px;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.miniBtn {
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+.gridButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.gridButtons button {
+  width: 100%;
+  margin: 0;
+}
+
+.dragCard {
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px dashed #38bdf8;
+  border-radius: 10px;
+  color: #bae6fd;
+  background: #082f49;
+  text-align: center;
+  cursor: grab;
+  user-select: none;
+}
+
+#canvasWrap {
+position: relative;
+overflow: hidden;
+background: #020617;
+}
+
+#world {
+position: absolute;
+left: 0;
+top: 0;
+transform-origin: 0 0;
+background:
+radial-gradient(circle at 20px 20px, #1e293b 1px, transparent 1px);
+background-size: 24px 24px;
+border: 1px solid #334155;
+}
+
+svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+.node {
+  cursor: grab;
+}
+
+.node text {
+  pointer-events: none;
+  font-size: 13px;
+  fill: #fff;
+}
+
+.node.selected rect {
+  stroke: #fff !important;
+  stroke-width: 3;
+}
+
+.node.multiSelected rect {
+  stroke: #22c55e !important;
+  stroke-width: 4;
+}
+
+.node.sameTruth rect {
+  stroke: var(--same) !important;
+  stroke-width: 4;
+}
+
+.node.searchMatch rect {
+  stroke: var(--match) !important;
+  stroke-width: 4;
+}
+
+.node.maskExtractMatch rect {
+  stroke: #22d3ee !important;
+  stroke-width: 5;
+}
+
+.node.maskOriginalMatch rect {
+  stroke: #fb923c !important;
+  stroke-width: 5;
+}
+
+.node.maskFocus rect {
+  stroke: #ffffff !important;
+  stroke-width: 6;
+}
+
+.port {
+  cursor: crosshair;
+}
+
+.port:hover {
+  stroke: #fff;
+  stroke-width: 3;
+}
+
+.wire {
+  stroke: #94a3b8;
+  stroke-width: 3;
+  fill: none;
+  cursor: pointer;
+}
+
+.wire:hover {
+  stroke: #e2e8f0;
+  stroke-width: 5;
+}
+
+.wire.selected {
+  stroke: #facc15;
+  stroke-width: 5;
+}
+
+.wire.dim {
+  opacity: 0.25;
+}
+
+.wire.highlight {
+  stroke: #facc15;
+  stroke-width: 4;
+}
+
+.ghostWire {
+  stroke: #38bdf8;
+  stroke-width: 3;
+  stroke-dasharray: 8 6;
+  fill: none;
+  pointer-events: none;
+}
+
+.probe {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  fill: #fde68a;
+  cursor: copy;
+}
+
+.probeBg {
+  fill: #422006;
+  stroke: #f59e0b;
+  rx: 5;
+  cursor: copy;
+}
+
+.probe.searchProbe {
+  fill: #f5d0fe;
+}
+
+.probeBg.searchProbeBg {
+  fill: #3b0764;
+  stroke: #c084fc;
+}
+
+.selectionBox {
+  fill: rgba(56, 189, 248, 0.12);
+  stroke: #38bdf8;
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+  pointer-events: none;
+}
+
+#status {
+position: absolute;
+left: 12px;
+bottom: 12px;
+background: #020617dd;
+border: 1px solid #334155;
+border-radius: 10px;
+padding: 8px 10px;
+font-size: 12px;
+color: #cbd5e1;
+max-width: 65vw;
+pointer-events: none;
+}
+
+#miniToolbar {
+position: absolute;
+left: 12px;
+top: 12px;
+background: #020617dd;
+border: 1px solid #334155;
+border-radius: 10px;
+padding: 8px 10px;
+font-size: 12px;
+color: #cbd5e1;
+display: flex;
+gap: 8px;
+align-items: center;
+}
+
+#rightToggleBtn {
+position: sticky;
+top: 0;
+z-index: 10;
+width: 100%;
+margin-bottom: 10px;
+}
+
+#app.right-collapsed {
+grid-template-columns: 310px 1fr 42px;
+}
+
+#app.right-collapsed #right {
+padding: 8px 5px;
+overflow: hidden;
+}
+
+#app.right-collapsed #rightContent {
+display: none;
+}
+
+#app.right-collapsed #rightToggleBtn {
+writing-mode: vertical-rl;
+height: 120px;
+width: 30px;
+padding: 8px 4px;
+margin: 4px auto;
+}
+
+#app.left-collapsed {
+grid-template-columns: 150px 1fr 350px;
+}
+
+#app.left-collapsed.right-collapsed {
+grid-template-columns: 150px 1fr 42px;
+}
+
+#app.left-collapsed #leftPanel {
+padding: 10px;
+}
+
+#app.left-collapsed #leftPanel .hint,
+#app.left-collapsed #leftPanel .advancedLeft {
+display: none;
+}
+
+#app.left-collapsed #leftPanel h2 {
+display: none;
+}
+
+#app.left-collapsed #compactPalette select,
+#app.left-collapsed #compactPalette button {
+font-size: 12px;
+padding: 6px;
+}
+
+#app.left-collapsed .dragCard {
+font-size: 12px;
+padding: 8px;
+}
+
+.mask-min-dot {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: #0891b2;
+  border: 2px solid #67e8f9;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+  z-index: 9999;
+  cursor: pointer;
+}

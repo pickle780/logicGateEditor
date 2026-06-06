@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>逻辑门电路编辑器</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="app" class="right-collapsed">
+    <aside id="leftPanel">
+      <div class="panelHeader">
+        <h2>逻辑门编辑器</h2>
+        <button class="miniBtn" onclick="toggleLeftPanel()">折叠</button>
+      </div>
+
+      <div id="compactPalette">
+        <h3>元件</h3>
+        <select id="componentSelect">
+          <option value="input">输入 input</option>
+          <option value="output">输出 output</option>
+          <option value="nand">NAND</option>
+          <option value="and">AND</option>
+          <option value="nor">NOR</option>
+          <option value="or">OR</option>
+          <option value="xor">XOR</option>
+          <option value="not">NOT</option>
+        </select>
+        <button class="primary" onclick="addSelectedComponentToCenter()">添加到中心</button>
+        <div id="dragComponentCard" class="dragCard" draggable="true" ondragstart="onComponentDragStart(event)">
+          拖入画布创建元件
+        </div>
+      </div>
+
+      <div class="advancedLeft">
+        <div class="hint">
+          支持 NAND、AND、NOR、OR、XOR、NOT。连接方式：点击输出端口，再点击输入端口。
+        </div>
+
+        <h3>快速创建</h3>
+        <div class="gridButtons">
+          <button onclick="addNode('input')">输入</button>
+          <button onclick="addNode('output')">输出</button>
+          <button onclick="addNode('nand')">NAND</button>
+          <button onclick="addNode('and')">AND</button>
+          <button onclick="addNode('nor')">NOR</button>
+          <button onclick="addNode('or')">OR</button>
+          <button onclick="addNode('xor')">XOR</button>
+          <button onclick="addNode('not')">NOT</button>
+        </div>
+
+        <div class="sep"></div>
+
+        <h3>编辑</h3>
+        <button class="danger" onclick="deleteSelected()">删除选中节点/连线</button>
+        <button onclick="disconnectSelectedWire()">断开选中连线</button>
+        <button onclick="clearSelection()">取消选择</button>
+        <button onclick="autoLayout()">自动排布</button>
+        <button onclick="newCircuit()">新建空电路</button>
+        <button onclick="loadDemoCircuit()">载入 Demo 电路</button>
+        <div class="hint">
+          框选可多选并拖动。Ctrl+C 复制，Ctrl+V 粘贴预览，左键确认。双击节点删除。双击或右键连线断开。Delete 删除选中对象。
+        </div>
+
+        <div class="sep"></div>
+
+        <h3>画布控制</h3>
+        <div class="row">
+          <button onclick="zoomBy(1.2)">放大</button>
+          <button onclick="zoomBy(1/1.2)">缩小</button>
+        </div>
+        <div class="row">
+          <button onclick="resetView()">重置视图</button>
+          <button onclick="fitView()">适配视图</button>
+        </div>
+        <label>画布宽度</label>
+        <input id="canvasWidth" type="number" value="2200" min="800" max="10000" onchange="updateCanvasSize()" />
+        <label>画布高度</label>
+        <input id="canvasHeight" type="number" value="1400" min="600" max="10000" onchange="updateCanvasSize()" />
+        <button onclick="expandCanvas()">扩大画布 1.5 倍</button>
+        <div class="hint">
+          滚轮缩放，中键或 Space 拖动画布，WASD 移动画布，Esc 取消操作。
+        </div>
+
+        <div class="sep"></div>
+
+        <h3>画布文件</h3>
+        <button onclick="downloadCanvas()">导出画布</button>
+        <input type="file" id="canvasFileInput" accept=".json,application/json" onchange="loadCanvasFile(event)" />
+        <button onclick="document.getElementById('canvasFileInput').click()">载入画布</button>
+        <div class="hint">
+          画布文件包含当前节点、连线、画布尺寸和视图位置。
+        </div>
+
+        <div class="sep"></div>
+
+        <h3>探针显示</h3>
+        <label>
+          <input id="showAllProbes" type="checkbox" onchange="render()" />
+          显示全部探针
+        </label>
+        <br />
+        <label>
+          <input id="showSelectedProbe" type="checkbox" checked onchange="render()" />
+          显示选中节点探针
+        </label>
+        <br />
+        <label>
+          <input id="highlightSameTruth" type="checkbox" checked onchange="render()" />
+          高亮相同 01 节点
+        </label>
+
+        <h3>通配符查找</h3>
+        <input id="truthSearch" placeholder="按完整探针查找，例如 01??，支持 ? 通配" oninput="render()" />
+        <button onclick="clearTruthSearch()">清空通配符查找</button>
+        <div class="hint">
+          通配符查找是独立功能，只按完整探针匹配，不受 Mask 影响。
+        </div>
+
+        <h3>Mask 提取统计</h3>
+        <input id="truthMask" placeholder="例如 1001 0000，1 表示提取该位" />
+
+        <div class="row">
+          <div>
+            <label>最小数量</label>
+            <input id="maskMinCount" type="number" value="2" min="1" />
+          </div>
+          <div>
+            <label>最大数量</label>
+            <input id="maskMaxCount" type="number" placeholder="空=不限" min="1" />
+          </div>
+        </div>
+
+        <button onclick="openMaskPopup()">打开 Mask 统计表</button>
+        <button onclick="clearMaskHighlight()">清空 Mask 高亮</button>
+        <div class="hint">
+          Mask 会忽略空格。对每个探针提取 Mask=1 的位，然后按提取结果分组统计。统计表可拖动、可最小化。
+        </div>
+
+        <div class="sep"></div>
+
+        <h3>模板</h3>
+        <input id="tplName" value="xor_nand" />
+        <button class="ok" onclick="saveTemplateFromCurrent()">保存当前结构为模板</button>
+        <button onclick="loadBuiltInXor()">载入 4 NAND XOR 示例</button>
+        <button onclick="loadSimpleGateExample()">载入普通门示例</button>
+        <div id="templates"></div>
+      </div>
+    </aside>
+
+    <main id="canvasWrap">
+      <div id="world">
+        <svg id="svg"></svg>
+      </div>
+      <div id="miniToolbar">
+        <span id="zoomText">100%</span>
+        <span>滚轮缩放</span>
+        <span>WASD 移动</span>
+        <span>Esc 取消</span>
+      </div>
+      <div id="status">就绪。</div>
+    </main>
+
+    <aside id="right">
+      <button id="rightToggleBtn" onclick="toggleRightPanel()">展开</button>
+
+      <div id="rightContent">
+        <h2>导入 / 导出 / 替换</h2>
+
+        <h3>导出</h3>
+        <input id="exportFolder" value="logic_circuit" />
+        <button class="primary" onclick="downloadExport()">导出 JSON</button>
+        <button onclick="copyExport()">复制导出 JSON</button>
+        <textarea id="exportText" readonly></textarea>
+
+        <h3>导入结构</h3>
+        <input type="file" id="fileInput" accept=".json,application/json" onchange="importFile(event)" />
+        <textarea id="importText" placeholder="粘贴导出的 JSON"></textarea>
+        <button onclick="importAsTemplate()">导入为替换模板</button>
+        <button onclick="importAsCircuit()">打开为当前电路</button>
+
+        <h3>替换选中节点</h3>
+        <select id="replaceSelect"></select>
+        <button class="primary" onclick="replaceSelectedNode()">用模板替换选中节点</button>
+
+        <div class="sep"></div>
+
+        <h3>选中探针</h3>
+        <textarea id="selectedProbeText" readonly></textarea>
+        <button onclick="copySelectedProbe()">复制选中探针 01</button>
+
+        <div class="sep"></div>
+
+        <h3>假设计算</h3>
+        <label>门类型</label>
+        <select id="assumeGate">
+          <option value="nand">NAND(a,b)</option>
+          <option value="and">AND(a,b)</option>
+          <option value="nor">NOR(a,b)</option>
+          <option value="or">OR(a,b)</option>
+          <option value="xor">XOR(a,b)</option>
+          <option value="not">NOT(a)</option>
+        </select>
+
+        <label>a 信号</label>
+        <input id="assumeA" placeholder="0011" />
+
+        <label>b 信号</label>
+        <input id="assumeB" placeholder="0101，NOT 可留空" />
+
+        <button onclick="calculateAssumption()">计算假设结果</button>
+        <button onclick="copyAssumptionResult()">复制假设结果</button>
+
+        <textarea id="assumeResult" readonly></textarea>
+
+        <div class="sep"></div>
+
+        <h3>信息</h3>
+        <div id="info" class="hint"></div>
+
+        <div class="sep"></div>
+
+        <h3>查找结果</h3>
+        <div id="searchInfo" class="hint"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
