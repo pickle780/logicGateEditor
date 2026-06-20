@@ -1,0 +1,60 @@
+/* freeze.css
+   Freeze panel (injected into left sidebar) + SVG freeze badges.
+*/
+
+/* ══════════════════════════════════════════════════
+   1. FREEZE PANEL
+   ══════════════════════════════════════════════════ */
+.freeze-panel {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #0b1424;
+  border: 1px solid #1e2d40;
+  border-radius: 8px;
+  transition: border-color .2s;
+}
+.freeze-panel.freeze-on { border-color: #1d4ed8; }
+
+.freeze-panel h3 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #60a5fa;
+}
+
+/* Checkbox row */
+.freeze-check-row {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; color: #94a3b8;
+  cursor: pointer; margin-bottom: 8px;
+}
+.freeze-check-row input { cursor: pointer; }
+
+/* Button group */
+.freeze-buttons { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+.freeze-buttons button {
+  flex: 1; min-width: 60px;
+  padding: 5px 8px; font-size: 12px;
+  border-radius: 6px;
+  background: #1a2540; border: 1px solid #2d3d55; color: #8094b0;
+}
+.freeze-buttons button:hover   { background: #243450; color: #c5d5e8; border-color: #38bdf8; }
+.freeze-buttons button.ok      { background: #0c2d1e; border-color: #166534; color: #4ade80; }
+.freeze-buttons button.danger  { background: #2d0a0a; border-color: #7f1d1d; color: #f87171; }
+
+.freeze-hint { margin-top: 4px; font-size: 11px; color: #4a5568; line-height: 1.5; }
+
+/* ══════════════════════════════════════════════════
+   2. FREEZE BADGE  (SVG "F" label on frozen nodes)
+   ══════════════════════════════════════════════════ */
+.freeze-badge rect {
+  fill: #1d4ed8;
+}
+.freeze-badge text {
+  fill: #bfdbfe;
+  font-size: 10px; font-weight: 800;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+/* When Freeze Mode is off, badges are shown in muted colour */
+.freeze-badge-off rect { fill: #334155; }
+.freeze-badge-off text { fill: #64748b; }

@@ -1,0 +1,32 @@
+/* wire.css
+   Port-dot interaction states + wire-drag ghost animation.
+   Kept separate from gates.css so you can tweak animation timings
+   and port colours without touching gate symbol styles.
+*/
+
+/* ── Port dots ─────────────────────────────────────────────────── */
+circle.port {
+  transition: filter 0.08s;
+  cursor: crosshair;
+}
+
+/* Nearest-port highlight during a wire drag */
+circle.portHot {
+  stroke: #fef3c7;
+  stroke-width: 4;
+  filter: drop-shadow(0 0 8px rgba(250,204,21,.8));
+}
+
+/* ── Wire-drag ghost ───────────────────────────────────────────── */
+.wireDragGhost {
+  stroke: #f59e0b;
+  stroke-width: 4;
+  stroke-dasharray: 8 4;
+  fill: none;
+  pointer-events: none;
+  animation: wireDash 0.5s linear infinite;
+}
+@keyframes wireDash {
+  from { stroke-dashoffset:  0; }
+  to   { stroke-dashoffset: -24; }
+}

@@ -1,0 +1,151 @@
+/* gates.css
+   Visual styles for gate symbols and the right-click context menu.
+   Port hover glow and wire ghost animation live in wire.css.
+*/
+
+/* ══════════════════════════════════════════════════
+   1. GATE SYMBOLS
+   ══════════════════════════════════════════════════ */
+
+/* Transparent hit-area absorbs pointer events so dragging a gate
+   doesn't fall through to the canvas and trigger box-select. */
+.gate-hit {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+}
+
+/* Symbol group is pointer-event-free; port circles handle their own. */
+.gate-symbol { pointer-events: none; }
+
+/* Gate body: dark fill + bright blue outline (PCB-trace aesthetic). */
+.gate-body {
+  fill: #0d1827;
+  stroke: #3b82f6;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* Short stub wires from the node edge to the gate body. */
+.gate-stub {
+  fill: none;
+  stroke: #1e3a5f;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* Inversion bubble on NOT / NAND / NOR. */
+.gate-bubble {
+  fill: #0d1827;
+  stroke: #3b82f6;
+  stroke-width: 2;
+}
+
+/* XOR extra arc (drawn to the left of the main body). */
+.gate-xor-arc {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* Input / Output terminal pill boxes. */
+.gate-terminal   { stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.gate-input-box  { fill: #071220; stroke: #3b82f6; }   /* blue  border */
+.gate-output-box { fill: #0f1208; stroke: #ca8a04; }   /* amber border */
+
+/* Text label inside input/output boxes. */
+.gate-terminal-text {
+  fill: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  paint-order: stroke;
+  stroke: transparent;
+}
+
+/* Name label below a gate body. */
+.gate-name-label {
+  fill: #334d6a;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* ── State: selected ── */
+.node.selected .gate-body,
+.node.selected .gate-bubble,
+.node.selected .gate-xor-arc    { stroke: #93c5fd; filter: drop-shadow(0 0 5px rgba(147,197,253,.55)); }
+.node.selected .gate-terminal   { stroke: #93c5fd; filter: drop-shadow(0 0 5px rgba(147,197,253,.55)); }
+.node.selected .gate-stub       { stroke: #3b82f6; }
+.node.selected .gate-name-label { fill:   #93c5fd; }
+.node.selected .gate-terminal-text { fill: #e2e8f0; }
+
+/* ── State: multi-selected ── */
+.node.multiSelected .gate-body,
+.node.multiSelected .gate-bubble,
+.node.multiSelected .gate-xor-arc  { stroke: #4ade80; filter: drop-shadow(0 0 5px rgba(74,222,128,.45)); }
+.node.multiSelected .gate-terminal { stroke: #4ade80; filter: drop-shadow(0 0 5px rgba(74,222,128,.45)); }
+.node.multiSelected .gate-stub       { stroke: #166534; }
+.node.multiSelected .gate-name-label { fill:   #4ade80; }
+
+/* ── State: highlighted (same truth / search / mask) ── */
+.node.sameTruth .gate-body,    .node.sameTruth .gate-bubble,
+.node.searchMatch .gate-body,  .node.searchMatch .gate-bubble,
+.node.maskExtractMatch .gate-body, .node.maskExtractMatch .gate-bubble,
+.node.maskOriginalMatch .gate-body,.node.maskOriginalMatch .gate-bubble
+  { filter: drop-shadow(0 0 6px rgba(250,204,21,.45)); }
+
+.node.maskFocus .gate-name-label,
+.node.maskFocus .gate-terminal-text { fill: #fef08a; }
+
+/* ── State: drag preview ghost ── */
+.node.preview .gate-body,
+.node.preview .gate-bubble { opacity: 0.55; }
+
+/* ══════════════════════════════════════════════════
+   2. RIGHT-CLICK CONTEXT MENU
+   ══════════════════════════════════════════════════ */
+.ctx-menu {
+  position: fixed;
+  z-index: 10000;
+  min-width: 165px;
+  background: #0d1627;
+  border: 1px solid #2d3d55;
+  border-radius: 10px;
+  box-shadow: 0 14px 36px rgba(0,0,0,.55);
+  padding: 4px;
+  animation: ctxIn 0.1s ease-out;
+}
+@keyframes ctxIn {
+  from { opacity: 0; transform: translateY(-3px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.ctx-title {
+  padding: 6px 10px 7px;
+  color: #60a5fa;
+  font-size: 11px;
+  border-bottom: 1px solid #1e293b;
+  margin-bottom: 3px;
+}
+
+.ctx-menu button {
+  width: 100%;
+  display: block;
+  text-align: left;
+  margin: 0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  background: transparent;
+  border: 0;
+  color: #cbd5e1;
+  font-size: 13px;
+}
+.ctx-menu button:hover    { background: #172033; border: 0; }
+.freeze-menu-active       { color: #60a5fa !important; }
+
+/* Thin separator line between main items and freeze items */
+.ctx-sep { height: 1px; background: #1e293b; margin: 3px 0; }
